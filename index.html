@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .row{
+            display: flex;
+        }
+        .board .cell{
+            height: 50px;
+            width: 50px;
+            border: 1px solid black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        button {
+            margin-top: 20px;
+            background-color: blue;
+            color: white;
+            border: none;
+            height: 30px;
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="board"></div>
+    <button class="button">Clear Board</button>
+
+    <script>
+        const game = [];
+        const grid = 3;
+
+        function createBoard() {
+            for (i = 0; i < grid; i++) {
+                const rowRef = document.createElement("div");
+                rowRef.className = 'row';
+                for (j = 0; j < grid; j++) {
+                    const cellRef = document.createElement("div");
+                    cellRef.className = 'cell';
+                    rowRef.appendChild(cellRef);
+                    cellRef.setAttribute('data-row', i);
+                    cellRef.setAttribute('data-cell', j)
+                }
+                document.querySelector('.board').appendChild(rowRef);
+            }
+        }
+
+        createBoard();
+    </script>
+</body>
+
+</html>
