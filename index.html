@@ -6,10 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        .row{
+        .row {
             display: flex;
         }
-        .board .cell{
+
+        .board .cell {
             height: 50px;
             width: 50px;
             border: 1px solid black;
@@ -27,7 +28,8 @@
             height: 30px;
             width: 100px;
         }
-        button:hover{
+
+        button:hover {
             background-color: rgb(4, 4, 100);
         }
     </style>
@@ -39,8 +41,18 @@
     <button class="button">Clear Board</button>
 
     <script>
-        const game = [];
+        let game = [];
         const grid = 3;
+        let currentPlayer = "X";
+
+        let btnRef = document.querySelector(".button");
+        btnRef.addEventListener("click", () => {
+            let cells = document.getElementsByClassName("cell");
+            for (i = 0; i < cells.length; i++) {
+                cells[i].innerText = "";
+                game = [];
+            }
+        })
 
         function createBoard() {
             for (i = 0; i < grid; i++) {
@@ -57,7 +69,68 @@
             }
         }
 
+        function changePlayer() {
+            currentPlayer = currentPlayer === "X" ? "O" : "X";
+        }
+
+        function updateGameData(row, cell, value) {
+            if (!game[row]) {
+                game[row] = [];
+            }
+            game[row][cell] = value;
+        }
+
+        function checkWinner() {
+            let isWinner = false;
+            for (let i = 0; i < grid; i++) {
+                const colValues = game.map(row => row[i]);
+                const diagonalValues = game.map((row, idx) => row[idx]);
+                const reverseDiagonalValues = game.map((row, idx) => row[grid - i - 1]);
+                if (checkLine(game[i])) {
+                    isWinner = true;
+                    console.log(currentPlayer, "is the winner - row");
+                    break; // No need to continue checking
+                }
+                if (checkLine(diagonalValues)) {
+                    isWinner = true;
+                    console.log(currentPlayer, "is the winner - diagonal");
+                    break;
+                }
+                if (checkLine(colValues)) {
+                    isWinner = true;
+                    console.log(currentPlayer, "is the winner - col");
+                    break;
+                }
+                if (checkLine(reverseDiagonalValues)) {
+                    isWinner = true;
+                    console.log(currentPlayer, "is the winner - reverse diagonal");
+                    break;
+                }
+            }
+        }
+
+        function checkLine(arr) {
+            return arr.every(data => data !== undefined && data === arr[0]);
+        }
+
+        function checkEventListener() {
+            let boardRef = document.querySelector(".board");
+            boardRef.addEventListener("click", (e) => {
+                if (e.target.nodeName === "DIV") {
+                    if (e.target.classList.contains('cell')) {
+                        e.target.innerText = currentPlayer;
+                        const rowId = e.target.dataset.row;
+                        const cellId = e.target.dataset.cell;
+                        updateGameData(rowId, cellId, currentPlayer);
+                        checkWinner();
+                        changePlayer();
+                    }
+                }
+            })
+        }
+
         createBoard();
+        checkEventListener();
     </script>
 </body>
 
